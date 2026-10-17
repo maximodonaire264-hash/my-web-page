@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1 class="text-4xl font-bold mb-2">Bienvenido</h1>
+<p class="text-slate-600 mb-8">Explorá nuestro catálogo de trenes.</p>
+{% include "_lista_trenes.html" with context %}
+{% endblock %}

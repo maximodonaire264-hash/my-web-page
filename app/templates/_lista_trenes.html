@@ -1,0 +1,13 @@
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for t in trenes %}
+  <a href="{{ url_for('main.tren_detalle', tren_id=t.id) }}"
+     class="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
+    <h2 class="font-semibold text-lg">{{ t.nombre }}</h2>
+    <p class="text-sm text-slate-500">
+      {% if t.tipo %}{{ t.tipo.nombre }} · {% endif %}{{ t.anio }}
+    </p>
+  </a>
+  {% else %}
+  <p class="text-slate-500">No se encontraron trenes.</p>
+  {% endfor %}
+</div>

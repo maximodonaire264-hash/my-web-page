@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1 class="text-3xl font-bold mb-6">Catálogo</h1>
+
+<form class="flex gap-3 mb-6" onsubmit="return false"
+      hx-get="{{ url_for('main.buscar') }}"
+      hx-trigger="input delay:300ms"
+      hx-target="#resultados">
+  <input type="search" name="q" placeholder="Buscar tren..."
+         class="border rounded px-3 py-2 w-full">
+  <select name="tipo" class="border rounded px-3 py-2">
+    <option value="">Todos</option>
+    {% for t in tipos %}
+      <option value="{{ t.id }}">{{ t.nombre }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div id="resultados">
+  {% include "_lista_trenes.html" %}
+</div>
+{% endblock %}

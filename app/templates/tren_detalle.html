@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}{{ tren.nombre }}{% endblock %}
+{% block contenido %}
+<a href="{{ url_for('main.catalogo') }}" class="text-sm text-slate-500">← Volver al catálogo</a>
+<h1 class="text-3xl font-bold mt-2">{{ tren.nombre }}</h1>
+<p class="text-slate-500 mb-4">
+  {% if tren.tipo %}{{ tren.tipo.nombre }} · {% endif %}{{ tren.anio }} · {{ tren.fabricante }}
+</p>
+<p>{{ tren.descripcion }}</p>
+{% endblock %}

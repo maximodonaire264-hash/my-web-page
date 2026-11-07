@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Catálogo - Trenes argentinos{% endblock %}
+
+{% set filtros = filtros|default({}) %}
+{% set tipos = tipos|default([]) %}
+
+{% block content %}
+<div class="mx-auto max-w-6xl px-4 py-10">
+  <h1 class="font-display text-5xl">Catálogo</h1>
+  <p class="mt-2 text-riel max-w-prose">Locomotoras, coches motor y formaciones que circularon por la Argentina.</p>
+
+  <form role="search" class="mt-6 flex flex-wrap items-end gap-4"
+        hx-get="{{ url_for('catalogo.index') }}" hx-target="#lista"
+        hx-trigger="input delay:300ms, change" hx-push-url="true">
+    <label class="flex flex-col text-sm gap-1">Buscar por nombre
+      <input type="search" name="q" value="{{ filtros.q or '' }}" class="border border-tinta/30 bg-white px-3 py-2 w-64">
+    </label>
+    <label class="flex flex-col text-sm gap-1">Tipo
+      <select name="tipo" class="border border-tinta/30 bg-white px-3 py-2">
+        <option value="">Todos</option>
+        {% for t in tipos %}
+          <option value="{{ t }}" {{ 'selected' if filtros.tipo == t }}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <a href="{{ url_for('catalogo.comparador') }}" class="ml-auto text-esmalte underline py-2">Comparar dos trenes</a>
+  </form>
+
+  <div id="lista" class="mt-8" aria-live="polite">
+    {% include 'catalogo/_lista.html' %}
+  </div>
+</div>
+{% endblock %}

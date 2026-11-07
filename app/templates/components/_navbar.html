@@ -1,0 +1,32 @@
+{% set links = [
+  ('catalogo.index', 'Catálogo', 'catalogo.index'),
+  ('mapa.index', 'Mapa', 'mapa'),
+  ('historia.linea_tiempo', 'Historia', 'historia'),
+  ('quiz.index', 'Trivia', 'quiz'),
+  ('main.glosario', 'Glosario', 'main.glosario'),
+] %}
+<header class="bg-tinta text-balasto">
+  <div class="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
+    <a href="{{ url_for('main.index') }}" class="font-display text-3xl font-semibold">Trenes argentinos</a>
+
+    <nav class="hidden md:flex items-center gap-6 font-display text-xl" aria-label="Principal">
+      {% for endpoint, texto, prefijo in links %}
+        <a href="{{ url_for(endpoint) }}"
+           class="py-1 border-b-2 {{ 'border-senal' if request.endpoint and request.endpoint.startswith(prefijo) else 'border-transparent hover:border-balasto/50' }}">{{ texto }}</a>
+      {% endfor %}
+      <a href="{{ url_for('catalogo.favoritos') }}" class="py-1 border-b-2 border-transparent hover:border-balasto/50">
+        Favoritos <span class="text-senal" x-text="$store.favs.ids.length"></span>
+      </a>
+    </nav>
+
+    <button type="button" class="md:hidden font-display text-xl px-3 py-1 border border-balasto/40"
+            @click="menu = !menu" :aria-expanded="menu" aria-controls="menu-movil">Menú</button>
+  </div>
+
+  <nav id="menu-movil" x-show="menu" x-cloak class="md:hidden border-t border-balasto/20 px-4 py-3 flex flex-col gap-3 font-display text-xl" aria-label="Principal (móvil)">
+    {% for endpoint, texto, prefijo in links %}
+      <a href="{{ url_for(endpoint) }}">{{ texto }}</a>
+    {% endfor %}
+    <a href="{{ url_for('catalogo.favoritos') }}">Favoritos (<span x-text="$store.favs.ids.length"></span>)</a>
+  </nav>
+</header>

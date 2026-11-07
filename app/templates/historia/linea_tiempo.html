@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Historia - Trenes argentinos{% endblock %}
+
+{# Si la ruta no pasa `hitos`, se usan estos de ejemplo. Revisalos y reemplazalos con tus propios datos. #}
+{% set hitos = hitos|default([
+  ('1857', 'Primera línea en Buenos Aires', 'Se inaugura el Ferrocarril Oeste, el primero del país.'),
+  ('1948', 'Nacionalización', 'Las líneas británicas y francesas pasan a manos del Estado.'),
+  ('1957', 'Ferrocarriles Argentinos', 'Se unifica la gestión de la red bajo una sola empresa estatal.'),
+  ('Década de 1990', 'Privatizaciones y cierres', 'Se concesionan los servicios y se levantan numerosos ramales.'),
+]) %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl px-4 py-10">
+  <h1 class="font-display text-5xl">Historia</h1>
+  <p class="mt-2 text-riel">Los hitos que marcaron al ferrocarril argentino.</p>
+
+  <ol class="mt-10 border-l-4 border-esmalte ml-2">
+    {% for anio, titulo, texto in hitos %}
+      <li class="pl-6 pb-10 relative">
+        <span class="absolute -left-[0.8rem] top-2 h-4 w-4 bg-senal border-2 border-balasto rounded-full" aria-hidden="true"></span>
+        <p class="font-display text-2xl text-esmalte">{{ anio }}</p>
+        <h2 class="font-display text-3xl leading-tight">{{ titulo }}</h2>
+        <p class="mt-1 leading-relaxed">{{ texto }}</p>
+      </li>
+    {% endfor %}
+  </ol>
+</div>
+{% endblock %}
+

@@ -1,0 +1,40 @@
+{# Parcial HTMX del quiz. Variables: fin, puntaje, total, numero, pregunta{id,texto,opciones}, respuesta{elegida,correcta_idx,acerto,explicacion} #}
+{% if fin %}
+  <div class="bg-white border border-tinta/15 p-6">
+    <h2 class="font-display text-4xl">Respondiste bien {{ puntaje }} de {{ total }}</h2>
+    <button type="button" hx-get="{{ url_for('quiz.pregunta') }}" hx-target="#quiz"
+            class="mt-5 bg-senal text-tinta font-display text-2xl px-6 py-3">Jugar de nuevo</button>
+  </div>
+{% else %}
+  <div class="bg-white border border-tinta/15 p-6">
+    <p class="text-riel">Pregunta {{ numero + 1 }} de {{ total }}</p>
+    <h2 class="font-display text-4xl leading-tight mt-1">{{ pregunta.texto }}</h2>
+
+    <ul class="mt-5 grid gap-2">
+      {% for opcion in pregunta.opciones %}
+        <li>
+          {% if not respuesta %}
+            <button type="button" hx-get="{{ url_for('quiz.responder') }}"
+                    hx-vals='{{ {"p": pregunta.id, "o": loop.index0, "n": numero}|tojson }}'
+                    hx-target="#quiz"
+                    class="w-full text-left px-4 py-3 border border-tinta/30 hover:bg-balasto">{{ opcion }}</button>
+          {% else %}
+            <div class="px-4 py-3 border {{ 'border-esmalte bg-esmalte/10' if loop.index0 == respuesta.correcta_idx else 'border-tinta/15 text-riel' }}">
+              {{ opcion }}
+              {% if loop.index0 == respuesta.elegida %}<span class="text-sm">(tu respuesta)</span>{% endif %}
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% if respuesta %}
+      <p class="mt-5 font-display text-2xl">{{ '¡Correcto!' if respuesta.acerto else 'No es esa.' }}</p>
+      {% if respuesta.explicacion %}<p class="mt-1 leading-relaxed">{{ respuesta.explicacion }}</p>{% endif %}
+      <button type="button" hx-get="{{ url_for('quiz.pregunta', n=numero + 1) }}" hx-target="#quiz"
+              class="mt-5 bg-esmalte text-white font-display text-2xl px-6 py-3">
+        {{ 'Ver resultado' if numero + 1 >= total else 'Siguiente pregunta' }}
+      </button>
+    {% endif %}
+  </div>
+{% endif %}

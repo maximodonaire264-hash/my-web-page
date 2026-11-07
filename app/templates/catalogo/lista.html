@@ -1,0 +1,11 @@
+{# Parcial que HTMX reemplaza al filtrar. Espera `trenes`; opcional `vacio` (texto cuando no hay resultados). #}
+{% if trenes %}
+  <p class="text-sm text-riel mb-4">{{ trenes|length }} {{ 'tren' if trenes|length == 1 else 'trenes' }}</p>
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {% for tren in trenes %}
+      {% include 'components/_card_tren.html' %}
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="py-10">{{ vacio|default('No hay trenes que coincidan con esos filtros. Probá quitar alguno.') }}</p>
+{% endif %}

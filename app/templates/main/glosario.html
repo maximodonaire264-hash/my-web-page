@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Glosario - Trenes argentinos{% endblock %}
+
+{# Si la ruta no pasa `terminos`, se usan estos de ejemplo (ordenados alfabéticamente). #}
+{% set terminos = terminos|default([
+  ('Bogie', 'Conjunto de ruedas y ejes montado en un chasis que gira bajo el vehículo.'),
+  ('Cambio', 'Aparato que desvía al tren de una vía hacia otra.'),
+  ('Durmiente', 'Pieza transversal sobre la que se apoyan y fijan los rieles.'),
+  ('Tracción', 'Sistema que mueve al tren: vapor, diésel o eléctrica.'),
+  ('Trocha', 'Distancia entre las caras internas de los dos rieles. En la Argentina hay trocha ancha, media y angosta.'),
+  ('Zorra', 'Vehículo liviano usado en tareas de mantenimiento de la vía.'),
+]) %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl px-4 py-10" x-data="{ q: '' }">
+  <h1 class="font-display text-5xl">Glosario</h1>
+  <p class="mt-2 text-riel">Los términos que vas a encontrar en las fichas.</p>
+
+  <label class="mt-6 flex flex-col text-sm gap-1">Buscar un término
+    <input type="search" x-model="q" class="border border-tinta/30 bg-white px-3 py-2">
+  </label>
+
+  <dl class="mt-8 divide-y divide-tinta/15">
+    {% for termino, definicion in terminos %}
+      <div class="py-4" x-show="$el.textContent.toLowerCase().includes(q.toLowerCase())">
+        <dt class="font-display text-3xl">{{ termino }}</dt>
+        <dd class="mt-1 leading-relaxed">{{ definicion }}</dd>
+      </div>
+    {% endfor %}
+  </dl>
+</div>
+{% endblock %}

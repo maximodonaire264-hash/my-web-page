@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{{ tren.nombre }} - Trenes argentinos{% endblock %}
+
+{% block content %}
+<article class="mx-auto max-w-6xl px-4 py-10">
+  <a href="{{ url_for('catalogo.index') }}" class="text-esmalte underline">Volver al catálogo</a>
+
+  <div class="mt-6 grid gap-10 lg:grid-cols-2">
+    <div>
+      {% if tren.imagen %}
+        <img src="{{ url_for('static', filename='img/trenes/' ~ tren.imagen) }}" alt="{{ tren.nombre }}" class="w-full border border-tinta/15">
+      {% else %}
+        <div class="aspect-[4/3] bg-tinta/10 grid place-items-center font-display text-3xl text-riel">Sin foto</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <h1 class="font-display text-6xl leading-none">{{ tren.nombre }}</h1>
+      <p class="mt-2 text-riel text-lg">{{ tren.tipo }}{% if tren.anio %}, desde {{ tren.anio }}{% endif %}</p>
+
+      {% if tren.descripcion %}
+        <p class="mt-5 max-w-prose leading-relaxed">{{ tren.descripcion }}</p>
+      {% endif %}
+
+      <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 border-t border-tinta/20 pt-4">
+        {% for etiqueta, valor in [
+          ('Fabricante', tren.fabricante),
+          ('Tracción', tren.traccion),
+          ('Trocha', tren.trocha),
+          ('Velocidad máxima', (tren.velocidad_maxima ~ ' km/h') if tren.velocidad_maxima else none),
+        ] %}
+          {% if valor %}
+            <dt class="text-riel">{{ etiqueta }}</dt>
+            <dd>{{ valor }}</dd>
+          {% endif %}
+        {% endfor %}
+      </dl>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button type="button" @click="$store.favs.toggle({{ tren.id }})" :aria-pressed="$store.favs.has({{ tren.id }})"
+                class="px-5 py-2 border border-tinta font-display text-xl"
+                x-text="$store.favs.has({{ tren.id }}) ? 'Quitar de favoritos' : 'Guardar en favoritos'"></button>
+        <a href="{{ url_for('catalogo.comparador', a=tren.id) }}" class="px-5 py-2 bg-esmalte text-white font-display text-xl">Comparar con otro tren</a>
+      </div>
+    </div>
+  </div>
+</article>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Comparador - Trenes argentinos{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-4xl px-4 py-10">
+  <h1 class="font-display text-5xl">Comparador</h1>
+  <p class="mt-2 text-riel">Elegí dos trenes para ver sus datos lado a lado.</p>
+
+  <form method="get" class="mt-6 flex flex-wrap items-end gap-4">
+    {% for campo, elegido in [('a', a), ('b', b)] %}
+      <label class="flex flex-col text-sm gap-1">Tren {{ 'A' if campo == 'a' else 'B' }}
+        <select name="{{ campo }}" class="border border-tinta/30 bg-white px-3 py-2 min-w-48">
+          <option value="">Elegir tren</option>
+          {% for t in todos|default([]) %}
+            <option value="{{ t.id }}" {{ 'selected' if elegido and elegido.id == t.id }}>{{ t.nombre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    {% endfor %}
+    <button type="submit" class="bg-esmalte text-white font-display text-xl px-6 py-2">Comparar</button>
+  </form>
+
+  {% if a and b %}
+    <div class="mt-8 overflow-x-auto">
+      <table class="w-full bg-white border border-tinta/15 text-left">
+        <caption class="sr-only">Comparación entre {{ a.nombre }} y {{ b.nombre }}</caption>
+        <thead>
+          <tr class="font-display text-3xl">
+            <th scope="col" class="p-4"><span class="sr-only">Dato</span></th>
+            <th scope="col" class="p-4">{{ a.nombre }}</th>
+            <th scope="col" class="p-4">{{ b.nombre }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for etiqueta, attr, sufijo in [
+            ('Tipo', 'tipo', ''), ('Año', 'anio', ''), ('Fabricante', 'fabricante', ''),
+            ('Tracción', 'traccion', ''), ('Trocha', 'trocha', ''), ('Velocidad máxima', 'velocidad_maxima', ' km/h'),
+          ] %}
+            <tr class="border-t border-tinta/15">
+              <th scope="row" class="p-4 font-normal text-riel">{{ etiqueta }}</th>
+              <td class="p-4">{% if a[attr] %}{{ a[attr] }}{{ sufijo }}{% else %}-{% endif %}</td>
+              <td class="p-4">{% if b[attr] %}{{ b[attr] }}{{ sufijo }}{% else %}-{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

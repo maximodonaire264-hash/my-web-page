@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Mapa - Trenes argentinos{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-6xl px-4 py-10">
+  <h1 class="font-display text-5xl">Mapa de la red</h1>
+  <p class="mt-2 text-riel max-w-prose">Tocá una estación para ver su nombre y la línea a la que pertenece.</p>
+
+  <div id="mapa" class="mt-6 h-[70vh] w-full border border-tinta/20" role="application" aria-label="Mapa de estaciones"></div>
+  <p id="mapa-estado" class="mt-3 text-sm text-riel" aria-live="polite">Cargando estaciones...</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const mapa = L.map('mapa').setView([-38.4, -63.6], 4);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; colaboradores de OpenStreetMap'
+  }).addTo(mapa);
+
+  const estado = document.getElementById('mapa-estado');
+
+  // Se espera una lista JSON: [{ "nombre": "...", "linea": "...", "lat": -34.6, "lng": -58.4 }]
+  fetch("{{ url_for('api.estaciones') }}")
+    .then(r => { if (!r.ok) throw new Error('respuesta no válida'); return r.json(); })
+    .then(lista => {
+      lista.forEach(e => {
+        const caja = document.createElement('div');
+        const titulo = document.createElement('strong');
+        titulo.textContent = e.nombre;
+        caja.append(titulo);
+        if (e.linea) caja.append(document.createElement('br'), e.linea);
+        L.marker([e.lat, e.lng]).addTo(mapa).bindPopup(caja);
+      });
+      estado.textContent = lista.length + ' estaciones en el mapa.';
+    })
+    .catch(() => {
+      estado.textContent = 'No pudimos cargar las estaciones. Probá recargar la página.';
+    });
+</script>
+{% endblock %}
